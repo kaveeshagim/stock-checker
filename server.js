@@ -13,7 +13,7 @@ const runner = require("./test-runner");
 const app = express();
 
 mongoose
-  .connect("mongodb://127.0.0.1:27017/stockchecker", {
+  .connect(process.env.MONGO_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
   })
