@@ -66,7 +66,7 @@ suite("Functional Tests", function () {
         res.body.stockData.forEach((stock) => {
           assert.property(stock, "stock");
           assert.property(stock, "price");
-          assert.property(stock, "rel_likes");
+          assert.property(stock, "likes");
         });
         done();
       });

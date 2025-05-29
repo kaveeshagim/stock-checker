@@ -12,7 +12,6 @@ suite("Functional Tests", function () {
       .get("/api/stock-prices")
       .query({ stock: "GOOG" })
       .end(function (err, res) {
-        console.log("Test: Viewing one stock\n", res.body);
         assert.equal(res.status, 200);
         assert.property(res.body.stockData, "stock");
         assert.property(res.body.stockData, "price");
@@ -27,7 +26,6 @@ suite("Functional Tests", function () {
       .get("/api/stock-prices")
       .query({ stock: "GOOG", like: true })
       .end(function (err, res) {
-        console.log("Test: Viewing one stock and liking it\n", res.body);
         assert.equal(res.status, 200);
         assert.property(res.body.stockData, "stock");
         assert.property(res.body.stockData, "price");
@@ -43,7 +41,6 @@ suite("Functional Tests", function () {
       .get("/api/stock-prices")
       .query({ stock: "GOOG", like: true })
       .end(function (err, res) {
-        console.log("Test: Viewing same stock and liking again\n", res.body);
         assert.equal(res.status, 200);
         assert.property(res.body.stockData, "stock");
         assert.property(res.body.stockData, "price");
@@ -59,7 +56,46 @@ suite("Functional Tests", function () {
       .get("/api/stock-prices")
       .query({ stock: ["GOOG", "MSFT"] })
       .end(function (err, res) {
-        console.log("Test: Viewing two stocks\n", res.body);
+        assert.equal(res.status, 200);
+        assert.isArray(res.body.stockData);
+        assert.equal(res.body.stockData.length, 2);
+        res.body.stockData.forEach((stock) => {
+          assert.property(stock, "stock");
+          assert.property(stock, "price");
+          assert.property(stock, "likes");
+        });
+        done();
+      });
+  });
+
+  test("Viewing two stocks and liking one of them", function (done) {
+    chai
+      .request(server)
+      .get("/api/stock-prices")
+      .query({ stock: ["GOOG", "MSFT"], like: "GOOG" })
+      .end(function (err, res) {
+        assert.equal(res.status, 200);
+        assert.isArray(res.body.stockData);
+        assert.equal(res.body.stockData.length, 2);
+        res.body.stockData.forEach((stock) => {
+          assert.property(stock, "stock");
+          assert.property(stock, "price");
+          assert.property(stock, "likes");
+        });
+        // Check that GOOG has more likes than MSFT
+        const googStock = res.body.stockData.find((s) => s.stock === "GOOG");
+        const msftStock = res.body.stockData.find((s) => s.stock === "MSFT");
+        assert.isAbove(googStock.likes, msftStock.likes);
+        done();
+      });
+  });
+
+  test("Viewing two stocks and liking both of them", function (done) {
+    chai
+      .request(server)
+      .get("/api/stock-prices")
+      .query({ stock: ["GOOG", "MSFT"], like: true })
+      .end(function (err, res) {
         assert.equal(res.status, 200);
         assert.isArray(res.body.stockData);
         assert.equal(res.body.stockData.length, 2);
@@ -67,62 +103,21 @@ suite("Functional Tests", function () {
           assert.property(stock, "stock");
           assert.property(stock, "price");
           assert.property(stock, "rel_likes");
+          assert.isAbove(stock.likes, 0);
         });
         done();
       });
   });
 
-  test("Viewing two stocks and liking them", function (done) {
+  test("Viewing an invalid stock returns error", function (done) {
     chai
       .request(server)
       .get("/api/stock-prices")
-      .query({ stock: ["GOOG", "MSFT"], like: true })
+      .query({ stock: "INVALIDSTOCK" })
       .end(function (err, res) {
-        console.log("Test: Viewing two stocks and liking them\n", res.body);
-        assert.equal(res.status, 200);
-        assert.isArray(res.body.stockData);
-        assert.equal(res.body.stockData.length, 2);
-        res.body.stockData.forEach((stock) => {
-          assert.property(stock, "stock");
-          assert.property(stock, "price");
-          assert.property(stock, "rel_likes"); // ✅ correct
-          assert.isNumber(stock.rel_likes); // ✅ also good to ensure it's a number
-        });
+        assert.equal(res.status, 500); // or 400, depending on how your server handles this
+        assert.property(res.body, "error");
         done();
       });
   });
-
-  // test("Viewing two stocks and liking one of them", function (done) {
-  //   chai
-  //     .request(server)
-  //     .get("/api/stock-prices")
-  //     .query({ stock: ["GOOG", "MSFT"], like: "GOOG" })
-  //     .end(function (err, res) {
-  //       assert.equal(res.status, 200);
-  //       assert.isArray(res.body.stockData);
-  //       assert.equal(res.body.stockData.length, 2);
-  //       res.body.stockData.forEach((stock) => {
-  //         assert.property(stock, "stock");
-  //         assert.property(stock, "price");
-  //         assert.property(stock, "likes");
-  //       });
-  //       // Check that GOOG has more likes than MSFT
-  //       const googStock = res.body.stockData.find((s) => s.stock === "GOOG");
-  //       const msftStock = res.body.stockData.find((s) => s.stock === "MSFT");
-  //       assert.isAbove(googStock.likes, msftStock.likes);
-  //       done();
-  //     });
-  // });
-
-  // test("Viewing an invalid stock returns error", function (done) {
-  //   chai
-  //     .request(server)
-  //     .get("/api/stock-prices")
-  //     .query({ stock: "INVALIDSTOCK" })
-  //     .end(function (err, res) {
-  //       assert.equal(res.status, 500); // or 400, depending on how your server handles this
-  //       assert.property(res.body, "error");
-  //       done();
-  //     });
-  // });
 });

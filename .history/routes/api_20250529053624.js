@@ -1,7 +1,7 @@
 "use strict";
 const axios = require("axios");
 const crypto = require("crypto");
-const Stock = require("../models/Stock.js");
+// const Stock = require("../models/Stock.js");
 const STOCK_API =
   "https://stock-price-checker-proxy.freecodecamp.rocks/v1/stock";
 
@@ -51,13 +51,13 @@ module.exports = function (app) {
 
     let stock = await Stock.findOne({ symbol: stockSymbol });
     if (!stock) {
-      stock = new Stock({ symbol: stockSymbol, likes: 0, ipHashes: [] });
+      // stock = new Stock({ symbol: stockSymbol, likes: 0, ipHashes: [] });
     }
 
     if (like && !stock.ipHashes.includes(ipHash)) {
       stock.likes++;
       stock.ipHashes.push(ipHash);
-      await stock.save();
+      // await stock.save();
     }
 
     return {

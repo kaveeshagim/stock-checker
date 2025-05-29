@@ -12,7 +12,6 @@ suite("Functional Tests", function () {
       .get("/api/stock-prices")
       .query({ stock: "GOOG" })
       .end(function (err, res) {
-        console.log("Test: Viewing one stock\n", res.body);
         assert.equal(res.status, 200);
         assert.property(res.body.stockData, "stock");
         assert.property(res.body.stockData, "price");
@@ -27,7 +26,6 @@ suite("Functional Tests", function () {
       .get("/api/stock-prices")
       .query({ stock: "GOOG", like: true })
       .end(function (err, res) {
-        console.log("Test: Viewing one stock and liking it\n", res.body);
         assert.equal(res.status, 200);
         assert.property(res.body.stockData, "stock");
         assert.property(res.body.stockData, "price");
@@ -43,7 +41,6 @@ suite("Functional Tests", function () {
       .get("/api/stock-prices")
       .query({ stock: "GOOG", like: true })
       .end(function (err, res) {
-        console.log("Test: Viewing same stock and liking again\n", res.body);
         assert.equal(res.status, 200);
         assert.property(res.body.stockData, "stock");
         assert.property(res.body.stockData, "price");
@@ -59,14 +56,13 @@ suite("Functional Tests", function () {
       .get("/api/stock-prices")
       .query({ stock: ["GOOG", "MSFT"] })
       .end(function (err, res) {
-        console.log("Test: Viewing two stocks\n", res.body);
         assert.equal(res.status, 200);
         assert.isArray(res.body.stockData);
         assert.equal(res.body.stockData.length, 2);
         res.body.stockData.forEach((stock) => {
           assert.property(stock, "stock");
           assert.property(stock, "price");
-          assert.property(stock, "rel_likes");
+          assert.property(stock, "likes");
         });
         done();
       });
@@ -78,7 +74,6 @@ suite("Functional Tests", function () {
       .get("/api/stock-prices")
       .query({ stock: ["GOOG", "MSFT"], like: true })
       .end(function (err, res) {
-        console.log("Test: Viewing two stocks and liking them\n", res.body);
         assert.equal(res.status, 200);
         assert.isArray(res.body.stockData);
         assert.equal(res.body.stockData.length, 2);
