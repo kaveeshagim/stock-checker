@@ -8,7 +8,6 @@ const STOCK_API =
 module.exports = function (app) {
   app.route("/api/stock-prices").get(async function (req, res) {
     try {
-      console.log("Received request for stock prices:", req.query);
       const stocks = req.query.stock; // Could be a string or array
       const like = req.query.like === "true";
       const anonymizedIP = crypto

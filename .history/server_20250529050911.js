@@ -12,13 +12,13 @@ const runner = require("./test-runner");
 
 const app = express();
 
-// mongoose
-//   .connect("mongodb://127.0.0.1:27017/stockchecker", {
-//     useNewUrlParser: true,
-//     useUnifiedTopology: true,
-//   })
-//   .then(() => console.log("✅ MongoDB connected"))
-//   .catch((err) => console.error("MongoDB connection error:", err));
+mongoose
+  .connect("mongodb://127.0.0.1:27017/stockchecker", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  })
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.error("MongoDB connection error:", err));
 
 app.use(helmet()); // Use Helmet for security best practices
 app.use(

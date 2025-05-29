@@ -1,14 +1,13 @@
 "use strict";
 const axios = require("axios");
 const crypto = require("crypto");
-// const Stock = require("../models/Stock.js");
+const Stock = require("../models/Stock.js");
 const STOCK_API =
   "https://stock-price-checker-proxy.freecodecamp.rocks/v1/stock";
 
 module.exports = function (app) {
   app.route("/api/stock-prices").get(async function (req, res) {
     try {
-      console.log("Received request for stock prices:", req.query);
       const stocks = req.query.stock; // Could be a string or array
       const like = req.query.like === "true";
       const anonymizedIP = crypto
@@ -57,7 +56,7 @@ module.exports = function (app) {
     if (like && !stock.ipHashes.includes(ipHash)) {
       stock.likes++;
       stock.ipHashes.push(ipHash);
-      // await stock.save();
+      await stock.save();
     }
 
     return {
