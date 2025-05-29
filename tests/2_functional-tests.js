@@ -20,7 +20,7 @@ suite("Functional Tests", function () {
       });
   });
 
-  test("Viewing one stock and liking it", function (donte) {
+  test("Viewing one stock and liking it", function (done) {
     chai
       .request(server)
       .get("/api/stock-prices")
@@ -105,6 +105,18 @@ suite("Functional Tests", function () {
           assert.property(stock, "likes");
           assert.isAbove(stock.likes, 0);
         });
+        done();
+      });
+  });
+
+  test("Viewing an invalid stock returns error", function (done) {
+    chai
+      .request(server)
+      .get("/api/stock-prices")
+      .query({ stock: "INVALIDSTOCK" })
+      .end(function (err, res) {
+        assert.equal(res.status, 500); // or 400, depending on how your server handles this
+        assert.property(res.body, "error");
         done();
       });
   });
