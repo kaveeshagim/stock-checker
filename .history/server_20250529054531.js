@@ -14,7 +14,7 @@ const app = express();
 
 mongoose
   .connect(
-    "mongodb+srv://kaveeshagimhanidev:1234@cluster0.mykg0.mongodb.net/",
+    "mongodb+srv://kaveeshagimhanidev:<YxUwfuY1oFOo6EFq>@cluster0.mykg0.mongodb.net/",
     {
       useNewUrlParser: true,
       useUnifiedTopology: true,

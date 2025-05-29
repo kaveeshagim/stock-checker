@@ -102,8 +102,8 @@ suite("Functional Tests", function () {
         res.body.stockData.forEach((stock) => {
           assert.property(stock, "stock");
           assert.property(stock, "price");
-          assert.property(stock, "rel_likes"); // ✅ correct
-          assert.isNumber(stock.rel_likes); // ✅ also good to ensure it's a number
+          assert.property(stock, "rel_likes");
+          assert.isAbove(stock.likes, 0);
         });
         done();
       });
